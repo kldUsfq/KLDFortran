@@ -1,0 +1,47 @@
+# Start makefile
+# Defining variables
+objects = var_mod.o atoms_par.o lm_mod.o sphere_lebedev_rule.o wfn_mod.o cube_mod.o rho_mod.o becke88_mod.o KLD.o
+modules = var_mod.mod atoms_par.mod lm_mod.mod sphere_lebedev_rule.mod wfn_mod.mod cube_mod.mod rho_mod.mod becke88_mod.mod
+f90comp = ifort
+switch = -ipo -O3 -parallel -no-prec-div -qopenmp -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -mkl=sequential
+#MKL Libraries
+MKLROOT = /opt/intel/mkl
+
+#LAPACK
+lapack = $(MKLROOT)/lib/intel64/libmkl_blas95_lp64.a  $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a $(MKLROOT)/lib/intel64/libmkl_core.a
+
+#MPI Libraries
+mpilibs=/opt/intel/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64
+mpilibsiomp5 = $(mpilibs)/libiomp5.a
+
+# libraries
+LIBS=/opt/intel/compilers_and_libraries/linux/mkl/lib/intel64
+# executable name
+EXE = KLD3D
+# Makefile
+$(EXE):	 		$(objects)
+			$(f90comp) $(objects)  $(lapack) $(switch) -o$(EXE) -L$(MKLROOT)/lib/intel64 -L$(mpilibs) 
+var_mod.o:		var_mod.f90
+			$(f90comp) -c $(switch) var_mod.f90
+atoms_par.o:		atoms_par.f90
+			$(f90comp) -c $(switch) atoms_par.f90
+lm_mod.o:		lm_mod.f90
+			$(f90comp) -c $(switch) lm_mod.f90
+sphere_lebedev_rule.o:	sphere_lebedev_rule.f90 
+			$(f90comp) -c $(switch) sphere_lebedev_rule.f90
+wfn_mod.o:		wfn_mod.f90
+			$(f90comp) -c $(switch) wfn_mod.f90
+cube_mod.o:		cube_mod.f90
+			$(f90comp) -c $(switch) cube_mod.f90
+rho_mod.o:		rho_mod.f90
+			$(f90comp) -c $(switch) rho_mod.f90
+becke88_mod.o:		becke88_mod.f90
+			$(f90comp) -c $(switch) becke88_mod.f90
+KLD.o:			KLD.f90
+			$(f90comp) -c $(switch) KLD.f90 
+# Cleaning everything
+clean:
+			rm $(modules) 
+			rm $(objects)
+			rm $(EXE)
+# End makefile

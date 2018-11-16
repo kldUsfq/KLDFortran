@@ -1,0 +1,39 @@
+# Start makefile
+# Defining variables
+objects = var_mod.o atoms_par.o lm_mod.o sphere_lebedev_rule.o wfn_mod.o cube_mod.o rho_mod.o becke88_mod.o KLD_2D.o
+modules = var_mod.mod atoms_par.mod lm_mod.mod sphere_lebedev_rule.mod wfn_mod.mod cube_mod.mod rho_mod.mod becke88_mod.mod
+f90comp = mpif90
+switch = -O3 -fopenmp
+# libraries
+####LIBS = /home/lrincon/lapack-3.4.1/liblapack.a /home/lrincon/lapack-3.4.1/blas_LINUX.a
+#LIBS = /home/jtorres/KLD_05062018/LIBS/lapack-3.7.0/liblapack.a /home/jtorres/KLD_05062018/LIBS/BLAS-3.7.0/blas_LINUX.a 
+LIBS = /opt/lapack-3.7.0/liblapack.a /share/libs/BLAS-3.7.0/blas_LINUX.a
+# executable name
+EXE = KLD2D
+# Makefile
+$(EXE):	 		$(objects)
+			$(f90comp) -o $(EXE) $(switch) $(objects) $(LIBS)
+var_mod.o:		var_mod.f90
+			$(f90comp) -c $(switch) var_mod.f90
+atoms_par.o:		atoms_par.f90
+			$(f90comp) -c $(switch) atoms_par.f90
+lm_mod.o:		lm_mod.f90
+			$(f90comp) -c $(switch) lm_mod.f90
+sphere_lebedev_rule.o:	sphere_lebedev_rule.f90 
+			$(f90comp) -c $(switch) sphere_lebedev_rule.f90
+wfn_mod.o:		wfn_mod.f90
+			$(f90comp) -c $(switch) wfn_mod.f90
+cube_mod.o:		cube_mod.f90
+			$(f90comp) -c $(switch) cube_mod.f90
+rho_mod.o:		rho_mod.f90
+			$(f90comp) -c $(switch) rho_mod.f90
+becke88_mod.o:		becke88_mod.f90
+			$(f90comp) -c $(switch) becke88_mod.f90
+KLD_2D.o:		KLD_2D.f90
+			$(f90comp) -c $(switch) KLD_2D.f90 
+# Cleaning everything
+clean:
+			rm $(modules) 
+			rm $(objects)
+			rm $(EXE)
+# End makefile
